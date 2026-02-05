@@ -1,0 +1,31 @@
+import pandas as pd
+import re
+
+d = pd.read_csv("data/homework_day12.csv")
+
+def c(d):
+    s = d["city"].astype(str)
+    s = s.str.strip().str.lower()
+    s = s.apply(lambda x: re.sub(r"[^\w\s]", "", x))
+    m = {
+        "nyc": "new york",
+        "new york": "new york",
+        "san francisco": "san francisco",
+        "sanfrancisco": "san francisco"
+    }
+    d["city_clean"] = s.replace(m)
+    return d
+
+def t(d):
+    d["signup_time_utc"] = pd.to_datetime(
+        d["signup_time"],
+        errors="coerce",
+        utc=True
+    )
+    return d
+
+d = c(d)
+d = t(d)
+
+print(d[["city", "city_clean"]])
+print(d[["signup_time", "signup_time_utc"]])
