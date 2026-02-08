@@ -1,0 +1,23 @@
+import pandas as pd
+import time
+
+def a(d):
+    d["age"] = pd.to_numeric(d["age"], errors="coerce")
+    d["income"] = pd.to_numeric(d["income"], errors="coerce")
+    d["city"] = d["city"].astype(str).str.strip()
+    return d
+
+def b(x, y, z):
+    t = time.time()
+    r = 0
+
+    for i, c in enumerate(pd.read_csv(x, chunksize=z)):
+        c = a(c)
+        r += len(c)
+        c.to_csv(y, mode="a", index=False, header=(i == 0))
+
+    return r, round(time.time() - t, 2)
+
+n, s = b("day13.csv", "out_day13.csv", 100)
+print(n, s)
+ 
