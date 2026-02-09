@@ -1,23 +1,30 @@
 import pandas as pd
 import time
 
-def a(d):
-    d["age"] = pd.to_numeric(d["age"], errors="coerce")
-    d["income"] = pd.to_numeric(d["income"], errors="coerce")
-    d["city"] = d["city"].astype(str).str.strip()
-    return d
+chunks = pd.read_csv("day13_large_users (1).csv", chunksize=2001, header=None)
 
-def b(x, y, z):
-    t = time.time()
-    r = 0
+total_rows = 0
+total_income = 0.0
 
-    for i, c in enumerate(pd.read_csv(x, chunksize=z)):
-        c = a(c)
-        r += len(c)
-        c.to_csv(y, mode="a", index=False, header=(i == 0))
+start_time = time.perf_counter()
 
-    return r, round(time.time() - t, 2)
+for block in chunks:
+    block = block.copy()
+    block.columns = ["age", "income", "score", "city"]  # if there are 4 columns
 
-n, s = b("day13.csv", "out_day13.csv", 100)
-print(n, s)
- 
+    income_notnull = block.dropna(subset=["income"])
+    total_rows += len(income_notnull)
+    total_income += income_notnull["income"].sum()
+
+    block["income_normalized"] = block["income"].apply(
+        lambda x: x / total_income if pd.notna(x) else x
+    )
+
+    age_notnull = block.dropna(subset=["age"])
+    print(age_notnull)
+
+elapsed = time.perf_counter() - start_time
+
+print("Rows cleaned:", total_rows)
+print("Income sum:", total_income)
+print("Elapsed time:", elapsed)
