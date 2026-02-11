@@ -1,0 +1,18 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+a = pd.read_csv("day16_encoding.csv")
+
+b = LabelEncoder()
+a["c"] = b.fit_transform(a["city"])
+
+d = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+e = d.fit_transform(a[["city"]])
+
+f = pd.DataFrame(e)
+
+print(a)
+print(f)
+
+print(a["c"].value_counts())
+print(f.sum())
