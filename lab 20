@@ -1,0 +1,38 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+a = pd.read_csv("day20_integration.csv")
+
+x = a[["pages_viewed","session_minutes","basket_value"]]
+
+c = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+d = c.fit_transform(a[["city"]])
+e = pd.DataFrame(d, columns=c.get_feature_names_out(["city"]))
+
+f = StandardScaler()
+g = f.fit_transform(x)
+h = pd.DataFrame(g, columns=x.columns)
+
+a["i"] = a["pages_viewed"] / (a["session_minutes"] + 1e-3)
+a["j"] = np.log1p(a["basket_value"])
+
+k = pd.concat([h, e, a[["i","j"]]], axis=1)
+
+print(x.describe())
+print(k.describe())
+
+for col in x.columns:
+    plt.figure(figsize=(6,4))
+    sns.histplot(x[col], kde=True, bins=20, color="skyblue")
+    plt.title(f'Histogram of {col}')
+    plt.xlabel(col)
+    plt.ylabel('Frequency')
+    plt.show()
+
+numeric_cols = k.select_dtypes(include=np.number).columns
+for col in numeric_cols:
+  plt.show()
