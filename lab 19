@@ -1,0 +1,29 @@
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+a = pd.read_csv("day19_transform.csv")
+
+b = a.copy()
+
+b["c"] = np.log1p(b["spend"])
+b["d"] = np.sqrt(b["spend"])
+
+print(a.describe())
+print(b[["c","d"]].describe())
+
+plt.figure()
+plt.hist(a["spend"])
+plt.title("raw")
+plt.show()
+
+plt.figure()
+plt.hist(b["c"])
+plt.title("log1p")
+plt.show()
+
+plt.figure()
+plt.hist(b["d"])
+plt.title("sqrt")
+plt.show()
