@@ -1,0 +1,22 @@
+import pandas as pd
+
+a = pd.read_csv("data/day18_binning.csv")
+
+b = pd.cut(a["CRIM"], bins=3)
+c = pd.qcut(a["CRIM"], q=3)
+
+d = [0, 1, 10, 100]
+e = ["Low", "Medium", "High"]
+f = pd.cut(a["CRIM"], bins=d, labels=e, right=False)
+
+g = pd.get_dummies(b)
+h = pd.get_dummies(c)
+i = pd.get_dummies(f)
+
+print(b.value_counts())
+print(c.value_counts())
+print(f.value_counts())
+
+print(g.sum())
+print(h.sum())
+print(i.sum())
