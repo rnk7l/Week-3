@@ -1,0 +1,31 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+a = pd.read_csv("day26_distributions.csv")
+
+b = a.select_dtypes(include=np.number)
+
+for c in b.columns:
+    sns.histplot(b[c], kde=True)
+    plt.show()
+
+for c in b.columns:
+    print(c)
+    print("mean:", b[c].mean())
+    print("median:", b[c].median())
+    print("std:", b[c].std())
+    print("skew:", b[c].skew())
+
+d = b[b.columns[0]]
+
+e = np.log1p(d)
+
+sns.histplot(e, kde=True)
+plt.show()
+
+print("log_mean:", e.mean())
+print("log_median:", e.median())
+print("log_std:", e.std())
+print("log_skew:", pd.Series(e).skew())
